@@ -1,0 +1,352 @@
+openapi: 3.1.0
+info:
+  title: APIFiddle Sample Definition
+  version: 0.0.0
+  description: Example workspace
+paths:
+  /fish:
+    get:
+      tags:
+        - fish
+      summary: Get fish list
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FishSummary"
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                title: GetFishListBadRequest
+          description: The server could not understand the request due to invalid syntax.
+            The client should modify the request and try again.
+        "404":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                title: GetFishListNotFound
+          description: The server cannot find the requested resource. The endpoint may be
+            invalid or the resource may no longer exist.
+        "500":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                title: GetFishListInternalServerError
+          description: The server encountered an unexpected condition that prevented it
+            from fulfilling the request. Report the issue to the support team if
+            it persists.
+      parameters:
+        - in: query
+          name: location_id
+          style: form
+          schema:
+            type: string
+          explode: true
+          required: false
+          description: Location identifier
+          allowReserved: false
+        - in: query
+          name: fish_name
+          style: form
+          schema:
+            type: string
+          explode: true
+          required: false
+          description: Name of fish type
+          allowReserved: false
+      description: >-
+        Fetches a comprehensive list of all fish. Each fish object includes
+        details like fish name and location.
+
+
+        This endpoint is paginated using the 'page' syntax.
+      operationId: getFishList
+  /fish/{fish_id}:
+    delete:
+      summary: delete fish
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                type: "null"
+                title: DeleteFishNoContent
+          description: The request was successful, but there is no content to return in
+            the response.
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                title: DeleteFishBadRequest
+          description: The server could not understand the request due to invalid syntax.
+            The client should modify the request and try again.
+        "404":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                title: DeleteFishNotFound
+          description: The server cannot find the requested resource. The endpoint may be
+            invalid or the resource may no longer exist.
+        "409":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                title: DeleteFishConflict
+          description: The request could not be completed due to a conflict with the
+            current state of the resource. Resolve the conflict and try again.
+        "500":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                title: DeleteFishInternalServerError
+          description: The server encountered an unexpected condition that prevented it
+            from fulfilling the request. Report the issue to the support team if
+            it persists.
+      parameters:
+        - $ref: "#/components/parameters/fish_id"
+      operationId: deleteFish
+      tags:
+        - fish
+  /fishes:
+    post:
+      summary: Create fish
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fish"
+          description: The request was successful, and a new resource was created.
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+          description: The server could not understand the request due to invalid syntax.
+            The client should modify the request and try again.
+      parameters: []
+      description: Create a fish
+      operationId: createFish
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Fish"
+        required: true
+        description: ""
+      tags:
+        - fish
+  /fishes/{fish_id}:
+    get:
+      summary: Get Fish
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Fish"
+          description: The request was successful, and the server has returned the
+            requested resource in the response body.
+        "400":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+          description: The server could not understand the request due to invalid syntax.
+            The client should modify the request and try again.
+        "404":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+          description: The server cannot find the requested resource. The endpoint may be
+            invalid or the resource may no longer exist.
+        "500":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+          description: The server encountered an unexpected condition that prevented it
+            from fulfilling the request. Report the issue to the support team if
+            it persists.
+      parameters:
+        - $ref: "#/components/parameters/fish_id"
+      operationId: getFish
+      description: Get fish based on id
+      tags:
+        - fish
+components:
+  schemas:
+    Fish:
+      type: object
+      required:
+        - id
+        - description
+        - location
+        - commonName
+      properties:
+        id:
+          type: integer
+        location:
+          type: string
+        description:
+          type: string
+        commonName:
+          type: string
+      description: ""
+    Location:
+      type: object
+      required:
+        - name
+        - fish
+        - id
+      properties:
+        id:
+          type: integer
+        fish:
+          type: string
+        name:
+          type: string
+      description: Places to fish
+    FishCreate:
+      type: object
+      required:
+        - description
+        - locationId
+        - commonName
+      properties:
+        description:
+          type: string
+        locationId:
+          type: string
+        commonName:
+          type: string
+      description: Data transfer object for creating new fish.
+      x-fiddle-dto-info:
+        baseSchemaName: Fish
+    FishSummary:
+      type: object
+      required:
+        - commonName
+        - locationId
+      properties:
+        commonName:
+          type: string
+        locationId:
+          type: string
+      description: A simplified representation of a Fish, typically used in list views.
+      x-fiddle-dto-info:
+        baseSchemaName: Fish
+  parameters:
+    fish_id:
+      name: fish_id
+      in: path
+      description: ""
+      schema:
+        type: integer
+      explode: false
+      style: simple
+      allowReserved: false
+      allowEmptyValue: true
+      required: true
+    fish_name:
+      in: query
+      name: fish_name
+      style: form
+      schema:
+        type: string
+      explode: true
+      description: ""
+      allowReserved: false
+      allowEmptyValue: false
+    location_id:
+      name: location_id
+      in: path
+      description: ""
+      schema:
+        type: integer
+      explode: false
+      style: simple
+      allowReserved: false
+      allowEmptyValue: false
+      required: true
+    location_name:
+      in: query
+      name: location_name
+      style: form
+      schema:
+        type: string
+      explode: true
+      description: ""
+      allowReserved: false
+      allowEmptyValue: false
+tags:
+  - name: fish
